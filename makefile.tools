@@ -1,0 +1,110 @@
+# This Makefile is used to setup the toolchain and application builds
+
+# Directories
+ROOT		:= $(CURDIR)/$(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
+TOOLS_DIR 	?= $(ROOT)/tools
+DL_DIR 		:= $(ROOT)/downloads
+
+$(TOOLS_DIR):
+	mkdir -p $@
+
+$(DL_DIR):
+	mkdir -p $@
+
+# Determine host OS
+UNAME := $(shell uname)
+
+# Linux
+ifeq ($(UNAME), Linux)
+  OSFAMILY := linux
+  LINUX := 1
+endif
+
+# Mac OSX
+ifeq ($(UNAME), Darwin)
+  OSFAMILY := macosx
+  MACOSX := 1
+endif
+
+# Report error if no OS was determined
+ifndef OSFAMILY
+  $(info uname reports $(UNAME))
+  $(info uname -m reports $(ARCH))
+  $(error failed to detect operating system)
+endif
+
+# Tools
+
+.PHONY: tools_install
+tools_install: arm_sdk_install stlink_install
+
+.PHONY: tools_clean
+tools_clean: arm_sdk_clean stlink_clean
+
+# ARM toolchain
+
+.PHONY: arm_sdk_install
+
+# Source: https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
+ARM_SDK_URL_BASE := https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC2.1/gcc-arm-none-eabi-9-2019-q4-major
+
+ifdef LINUX
+  ARM_SDK_URL := $(ARM_SDK_URL_BASE)-linux.tar.bz2
+endif
+
+ifdef MACOSX
+  ARM_SDK_URL := $(ARM_SDK_URL_BASE)-mac.tar.bz2
+endif
+
+ARM_SDK_FILE := $(notdir $(ARM_SDK_URL))
+ARM_SDK_DIR := $(TOOLS_DIR)/gcc-arm-none-eabi
+GCC_REQUIRED_VERSION := 9.2.1
+ARM_SDK_INSTALL_MARKER := $(ARM_SDK_DIR)/bin/arm-none-eabi-gcc-$(GCC_REQUIRED_VERSION)
+
+arm_sdk_install: | $(TOOLS_DIR)
+arm_sdk_install: arm_sdk_download $(ARM_SDK_INSTALL_MARKER)
+
+$(ARM_SDK_INSTALL_MARKER):
+	$(V1) mkdir -p $(ARM_SDK_DIR)
+	$(V1) tar -C $(ARM_SDK_DIR) --strip-components=1 -xjf "$(DL_DIR)/$(ARM_SDK_FILE)"
+
+.PHONY: arm_sdk_download
+arm_sdk_download: | $(DL_DIR)
+arm_sdk_download: $(DL_DIR)/$(ARM_SDK_FILE)
+$(DL_DIR)/$(ARM_SDK_FILE):
+	$(V1) curl -L -k -o "$(DL_DIR)/$(ARM_SDK_FILE)" -z "$(DL_DIR)/$(ARM_SDK_FILE)" "$(ARM_SDK_URL)"
+
+.PHONY: arm_sdk_clean
+arm_sdk_clean:
+	$(V1) [ ! -d "$(ARM_SDK_DIR)" ] || $(RM) -r $(ARM_SDK_DIR)
+	$(V1) [ ! -f "$(DL_DIR)/$(ARM_SDK_FILE)" ] || $(RM) $(DL_DIR)/$(ARM_SDK_FILE)
+
+# ST-Link
+
+.PHONY: stlink_install
+
+STLINK_URL := https://github.com/texane/stlink/releases/download/1.3.0/stlink-1.3.0-macosx-amd64.zip
+STLINK_FILE := $(notdir $(STLINK_URL))
+STLINK_DIR := $(TOOLS_DIR)/stlink
+STLINK_BUILD_DIR := $(TOOLS_DIR)/stlink-build
+STLINK_INSTALL_MARKER := $(STLINK_DIR)/bin/stlink
+
+# STLINK_OPTIONS := 
+
+stlink_install: | $(TOOLS_DIR)
+stlink_install: stlink_download $(STLINK_INSTALL_MARKER)
+
+$(STLINK_INSTALL_MARKER):
+	$(V1) mkdir -p $(STLINK_DIR)
+	$(V1) tar -C $(STLINK_DIR) --strip-components=1 -xjf "$(DL_DIR)/$(STLINK_FILE)"
+
+.PHONY: stlink_download
+stlink_download: | $(DL_DIR)
+stlink_download: $(DL_DIR)/$(STLINK_FILE)
+$(DL_DIR)/$(STLINK_FILE):
+	$(V1) curl -L -k -o "$(DL_DIR)/$(STLINK_FILE)" -z "$(DL_DIR)/$(STLINK_FILE)" "$(STLINK_URL)"
+
+.PHONY: stlink_clean
+stlink_clean:
+	$(V1) [ ! -d "$(STLINK_DIR)" ] || $(RM) -r $(STLINK_DIR)
+	$(V1) [ ! -f "$(DL_DIR)/$(STLINK_FILE)" ] || $(RM) $(DL_DIR)/$(STLINK_FILE)
