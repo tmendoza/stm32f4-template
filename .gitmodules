@@ -1,0 +1,24 @@
+[submodule "libs/CMSIS_5"]
+	path = libs/CMSIS_5
+	url = https://github.com/ARM-software/CMSIS_5.git
+	branch = master
+[submodule "libs/libopencm3"]
+	path = libs/libopencm3
+	url = https://github.com/libopencm3/libopencm3.git
+	branch = master
+[submodule "libs/libusbhost"]
+	path = libs/libusbhost
+	url = https://github.com/libusbhost/libusbhost.git
+	branch = master
+[submodule "libs/FreeRTOS"]
+	path = libs/FreeRTOS
+	url = https://github.com/FreeRTOS/FreeRTOS.git
+	branch = master
+[submodule "libs/stm32f4xx-stdlib"]
+	path = libs/stm32f4xx-stdlib
+	url = https://github.com/tmendoza/stm32f4xx-stdlib.git
+	branch = master
+[submodule "stmlib"]
+	path = stmlib
+	url = https://github.com/tmendoza/stmlib.git
+	branch = master
