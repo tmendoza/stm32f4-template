@@ -219,6 +219,7 @@ Much of the code in this repository is done in preparation for developing a MIDI
 * OSC connectivity over Ethernet
 * CV connectivity for Eurorack integration
 * 16 tracks / 64 steps per track
+* SD Card Project storage
 
 ### References and Inspiration
 
