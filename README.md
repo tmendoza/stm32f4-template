@@ -2,6 +2,8 @@
 
 A Standard Template for starting STM32F4xx C projects.
 
+![STMF324xxx](https://www.st.com/content/ccc/fragment/product_related/rpn_information/board_photo/17/e9/78/47/7c/f4/42/e1/stm32f4_discovery.jpg/files/stm32f4_discovery.jpg/_jcr_content/translations/en.stm32f4_discovery.jpg)
+
 ## Installation
 
 ### Cloning GitHub Repository
