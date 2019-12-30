@@ -52,25 +52,6 @@ $ make
 ## Development
 The repository has everything needed within it to successfully build the test file.  
 
-### Flash the STM32F4xx Discovery Board
-```bash
-$ make burn
-st-flash 1.3.0
-2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Loading device parameters....
-2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Device connected is: F4 device, id 0x10076413
-2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: SRAM size: 0x30000 bytes (192 KiB), Flash: 0x100000 bytes (1024 KiB) in pages of 16384 bytes
-2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Attempting to write 46924 (0xb74c) bytes to stm32 address: 134217728 (0x8000000)
-Flash page at addr: 0x08008000 erasedEraseFlash - Sector:0x2 Size:0x4000 
-2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Finished erasing 3 pages of 16384 (0x4000) bytes
-2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Starting Flash write for F2/F4/L4
-2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/flash_loader.c: Successfully loaded flash loader in sram
-enabling 32-bit flash writes
-size: 32768
-size: 14156
-2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Starting verification of write complete
-2019-12-29T21:25:52 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Flash written and verified! jolly good!
-```
-
 ### Compile/Build the Template application 
 
 ```bash
@@ -127,7 +108,26 @@ $ make
 [BIN] manufunkture.bin
 ```
 
-### Console Access
+### Flash the STM32F4xx Discovery Board
+```bash
+$ make burn
+st-flash 1.3.0
+2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Loading device parameters....
+2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Device connected is: F4 device, id 0x10076413
+2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: SRAM size: 0x30000 bytes (192 KiB), Flash: 0x100000 bytes (1024 KiB) in pages of 16384 bytes
+2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Attempting to write 46924 (0xb74c) bytes to stm32 address: 134217728 (0x8000000)
+Flash page at addr: 0x08008000 erasedEraseFlash - Sector:0x2 Size:0x4000 
+2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Finished erasing 3 pages of 16384 (0x4000) bytes
+2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Starting Flash write for F2/F4/L4
+2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/flash_loader.c: Successfully loaded flash loader in sram
+enabling 32-bit flash writes
+size: 32768
+size: 14156
+2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Starting verification of write complete
+2019-12-29T21:25:52 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Flash written and verified! jolly good!
+```
+
+### TTY Console Access
 The test application (main.c) has code using USART3 to communicate back to the host.  You will need a USB-to-Serial adapter
 to connect to the USART2 pins on the discovery board. 
 
@@ -145,10 +145,34 @@ $ screen /dev/tty.usbserial 115200
 
 Run make disass / make disass-all to disassamble.
 
+```bash
+$ make disass
+...
+Disassembly of section .text:
+
+080001c0 <__do_global_dtors_aux>:
+ 80001c0:       b510            push    {r4, lr}
+ 80001c2:       4c05            ldr     r4, [pc, #20]   ; (80001d8 <__do_global_dtors_aux+0x18>)
+ 80001c4:       7823            ldrb    r3, [r4, #0]
+ 80001c6:       b933            cbnz    r3, 80001d6 <__do_global_dtors_aux+0x16>
+ 80001c8:       4b04            ldr     r3, [pc, #16]   ; (80001dc <__do_global_dtors_aux+0x1c>)
+ 80001ca:       b113            cbz     r3, 80001d2 <__do_global_dtors_aux+0x12>
+ 80001cc:       4804            ldr     r0, [pc, #16]   ; (80001e0 <__do_global_dtors_aux+0x20>)
+ 80001ce:       f3af 8000       nop.w
+ 80001d2:       2301            movs    r3, #1
+ 80001d4:       7023            strb    r3, [r4, #0]
+ 80001d6:       bd10            pop     {r4, pc}
+ 80001d8:       200009c8        .word   0x200009c8
+ 80001dc:       00000000        .word   0x00000000
+ 80001e0:       08009ee0        .word   0x08009ee0
+...
+```
+
 ### Debug
 
 In order to debug your code, connect your board to the PC, run st-util (comes with stlink utility) from one terminal, and from another terminal within the project directory run make debug. You can then use general gdb commands to browse through the code.
 
+#### Launch st-util
 ```bash
 $ ./tools/stlink/bin/st-util
 st-util 1.3.0
