@@ -42,6 +42,35 @@ $ make
   ...
 ```
 
+
+## Libraries
+
+* FreeRTOS - https://github.com/FreeRTOS/FreeRTOS.git
+* libopencm3 - https://github.com/libopencm3/libopencm3.git
+* ST CMSIS - https://github.com/ARM-software/CMSIS_5.git
+
+## Development
+The repository has everything needed within it to successfully build the test file.  
+
+### Flash the STM32F4xx Discovery Board
+```bash
+$ make burn
+st-flash 1.3.0
+2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Loading device parameters....
+2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Device connected is: F4 device, id 0x10076413
+2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: SRAM size: 0x30000 bytes (192 KiB), Flash: 0x100000 bytes (1024 KiB) in pages of 16384 bytes
+2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Attempting to write 46924 (0xb74c) bytes to stm32 address: 134217728 (0x8000000)
+Flash page at addr: 0x08008000 erasedEraseFlash - Sector:0x2 Size:0x4000 
+2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Finished erasing 3 pages of 16384 (0x4000) bytes
+2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Starting Flash write for F2/F4/L4
+2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/flash_loader.c: Successfully loaded flash loader in sram
+enabling 32-bit flash writes
+size: 32768
+size: 14156
+2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Starting verification of write complete
+2019-12-29T21:25:52 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Flash written and verified! jolly good!
+```
+
 ### Compile/Build the Template application 
 
 ```bash
@@ -98,30 +127,36 @@ $ make
 [BIN] manufunkture.bin
 ```
 
-### Flash the STM32F4xx Discovery Board
+### Console Access
+The test application (main.c) has code using USART3 to communicate back to the host.  You will need a USB-to-Serial adapter
+to connect to the USART2 pins on the discovery board. 
+
+* USB to TTL Serial Cable - https://www.adafruit.com/product/954
+
+Within the application (main.c) USART3(PB10, PB11) is used to redirect printf data to the host PC.
+
+You can use the screen command to connect to the Discovery board using the USB-to-Serial cable
+
 ```bash
-$ make burn
-st-flash 1.3.0
-2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Loading device parameters....
-2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Device connected is: F4 device, id 0x10076413
-2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: SRAM size: 0x30000 bytes (192 KiB), Flash: 0x100000 bytes (1024 KiB) in pages of 16384 bytes
-2019-12-29T21:25:50 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Attempting to write 46924 (0xb74c) bytes to stm32 address: 134217728 (0x8000000)
-Flash page at addr: 0x08008000 erasedEraseFlash - Sector:0x2 Size:0x4000 
-2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Finished erasing 3 pages of 16384 (0x4000) bytes
-2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Starting Flash write for F2/F4/L4
-2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/flash_loader.c: Successfully loaded flash loader in sram
-enabling 32-bit flash writes
-size: 32768
-size: 14156
-2019-12-29T21:25:51 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Starting verification of write complete
-2019-12-29T21:25:52 INFO /Users/jerry/Downloads/stlink-master/src/common.c: Flash written and verified! jolly good!
+$ screen /dev/tty.usbserial 115200
 ```
 
-## Libraries
+### Disassemble
 
-* FreeRTOS - https://github.com/FreeRTOS/FreeRTOS.git
-* libopencm3 - https://github.com/libopencm3/libopencm3.git
-* ST CMSIS - https://github.com/ARM-software/CMSIS_5.git
+Run make disass / make disass-all to disassamble.
 
-## Development
-The repository has everything needed within it to successfully build the test file.  
+### Debug
+
+In order to debug your code, connect your board to the PC, run st-util (comes with stlink utility) from one terminal, and from another terminal within the project directory run make debug. You can then use general gdb commands to browse through the code.
+
+```bash
+$ ./tools/stlink/bin/st-util
+st-util 1.3.0
+2019-12-29T21:40:46 INFO common.c: Loading device parameters....
+2019-12-29T21:40:46 INFO common.c: Device connected is: F4 device, id 0x10076413
+2019-12-29T21:40:46 INFO common.c: SRAM size: 0x30000 bytes (192 KiB), Flash: 0x100000 bytes (1024 KiB) in pages of 16384 bytes
+2019-12-29T21:40:46 INFO gdb-server.c: Chip ID is 00000413, Core ID is  2ba01477.
+2019-12-29T21:40:46 INFO gdb-server.c: Listening at *:4242...
+```
+
+
