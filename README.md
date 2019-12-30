@@ -189,6 +189,7 @@ st-util 1.3.0
 
 #### Run make debug 
 ```bash
+$ make debug
 GNU gdb (GNU Tools for Arm Embedded Processors 9-2019-q4-major) 8.3.0.20190709-git
 Copyright (C) 2019 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
