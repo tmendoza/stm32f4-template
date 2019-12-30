@@ -1,8 +1,17 @@
 # stm32f4-template
 
+## Description
+
 A Standard Template for starting STM32F4xx C projects.  This project includes the FreeRTOS Realtime Operating System source code.  This project also includes the ST CMSIS
  and ST Standard Peripheral Drivers.  In addition to the libraries supplied by ST, I have also included libopencm3 as an option for accessing the STM32F4 hardware with a 
- higher-level C library.
+ higher-level C library.  Finally, I have included a usbhost library for simplified USB host function development.
+
+## Libraries
+
+* FreeRTOS - https://github.com/FreeRTOS/FreeRTOS.git
+* libopencm3 - https://github.com/libopencm3/libopencm3.git
+* ST CMSIS - https://github.com/ARM-software/CMSIS_5.git
+* libusbhost - https://github.com/libusbhost/libusbhost.git
 
 ## Installation
 
@@ -43,13 +52,6 @@ $ make
   GENHDR  include/libopencm3/stm32/l1/irq.json
   ...
 ```
-
-
-## Libraries
-
-* FreeRTOS - https://github.com/FreeRTOS/FreeRTOS.git
-* libopencm3 - https://github.com/libopencm3/libopencm3.git
-* ST CMSIS - https://github.com/ARM-software/CMSIS_5.git
 
 ## Development
 The repository has everything needed within it to successfully build the test file.  
@@ -170,7 +172,7 @@ Disassembly of section .text:
 ...
 ```
 
-### Debug
+### Debugging
 
 In order to debug your code, connect your board to the PC, run st-util (comes with stlink utility) from one terminal, and from another terminal within the project directory run make debug. You can then use general gdb commands to browse through the code.
 
@@ -207,4 +209,18 @@ Remote debugging using :4242
 0x08004fec in Reset_Handler ()
 (gdb) 
 ```
+## History
+Much of the code in this repository is done in preparation for developing a MIDI/OSC/CV Sequencer.
 
+### Sequencer Features
+
+* MIDI Din and MIDI USB connectivity
+* OSC connectivity over Ethernet
+* CV connectivity for Eurorack integration
+* 16 tracks / 64 steps per track
+
+## Bugs
+I am sure there are some but... Where are they?
+
+## Author
+[Tony Mendoza](mailto:commercial@tonymendoza.us)
