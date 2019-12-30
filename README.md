@@ -222,9 +222,9 @@ Much of the code in this repository is done in preparation for developing a MIDI
 
 ### References and Inspiration
 
-[fcayci](https://github.com/fcayci/stm32f4-c-template) - https://github.com/fcayci/stm32f4-c-template
-[performer](https://westlicht.github.io/performer/) - https://westlicht.github.io/performer/
-[mutable instruments](https://github.com/pichenettes/eurorack) - https://github.com/pichenettes/eurorack
+* [fcayci](https://github.com/fcayci/stm32f4-c-template) - https://github.com/fcayci/stm32f4-c-template
+* [performer](https://westlicht.github.io/performer/) - https://westlicht.github.io/performer/
+* [mutable instruments](https://github.com/pichenettes/eurorack) - https://github.com/pichenettes/eurorack
 
 ## Bugs
 I am sure there are some but... Where are they?
