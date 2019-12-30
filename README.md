@@ -1,8 +1,8 @@
 # stm32f4-template
 
-A Standard Template for starting STM32F4xx C projects.
-
-![STMF324xxx](https://www.st.com/content/ccc/fragment/product_related/rpn_information/board_photo/17/e9/78/47/7c/f4/42/e1/stm32f4_discovery.jpg/files/stm32f4_discovery.jpg/_jcr_content/translations/en.stm32f4_discovery.jpg)
+A Standard Template for starting STM32F4xx C projects.  This project includes the FreeRTOS Realtime Operating System source code.  This project also includes the ST CMSIS
+ and ST Standard Peripheral Drivers.  In addition to the libraries supplied by ST, I have also included libopencm3 as an option for accessing the STM32F4 hardware with a 
+ higher-level C library.
 
 ## Installation
 
