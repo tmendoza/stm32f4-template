@@ -2,8 +2,8 @@
 
 # Directories
 ROOT		:= $(CURDIR)/$(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
-TOOLS_DIR 	?= $(ROOT)/tools
-DL_DIR 		:= $(ROOT)/downloads
+TOOLS_DIR 	?= $(ROOT)/../tools
+DL_DIR 		:= $(ROOT)/../downloads
 
 $(TOOLS_DIR):
 	mkdir -p $@
