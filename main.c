@@ -314,7 +314,7 @@ void my_task5(void *p) {
 }
 
 void button_task(void *p) {
-  BaseType_t xEvent;
+  
   const TickType_t xBlockTime = pdMS_TO_TICKS( 500 );
   uint32_t ulNotifiedValue;
 
