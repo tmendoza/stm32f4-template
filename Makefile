@@ -1,4 +1,6 @@
-TARGET:=manufunkture
+TARGET:=blinky
+
+DEVICE=STM32F4
 
 ROOT := $(CURDIR)/$(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
@@ -19,10 +21,12 @@ OPTLVL:=0
 DBG:=-g
 
 FREERTOS:=$(CURDIR)/libs/FreeRTOS/FreeRTOS/Source
+OPENCM3:=$(CURDIR)/libs/libopencm3
 STARTUP:=$(CURDIR)/hardware
 LINKER_SCRIPT:=$(CURDIR)/linker/stm32_flash.ld
 
 INCLUDE=-I$(CURDIR)/include
+INCLUDE+=-I$(OPENCM3)/include
 INCLUDE+=-I$(FREERTOS)/include
 INCLUDE+=-I$(FREERTOS)/portable/GCC/ARM_CM4F
 INCLUDE+=-I$(CURDIR)/libs/stm32f4xx-stdlib/Libraries/CMSIS/Device/ST/STM32F4xx/Include
@@ -59,47 +63,47 @@ SRC+=heap_4.c
 
 # Standard Peripheral Source Files
 SRC+=misc.c
-SRC+=stm32f4xx_dcmi.c
+#SRC+=stm32f4xx_dcmi.c
 #SRC+=stm32f4xx_hash.c
-SRC+=stm32f4xx_rtc.c
-SRC+=stm32f4xx_adc.c
-SRC+=stm32f4xx_dma.c
+#SRC+=stm32f4xx_rtc.c
+#SRC+=stm32f4xx_adc.c
+#SRC+=stm32f4xx_dma.c
 #SRC+=stm32f4xx_hash_md5.c
-SRC+=stm32f4xx_sai.c
-SRC+=stm32f4xx_can.c
-SRC+=stm32f4xx_dma2d.c
+#SRC+=stm32f4xx_sai.c
+#SRC+=stm32f4xx_can.c
+#SRC+=stm32f4xx_dma2d.c
 #SRC+=stm32f4xx_hash_sha1.c
-SRC+=stm32f4xx_sdio.c
-SRC+=stm32f4xx_cec.c
-SRC+=stm32f4xx_dsi.c
-SRC+=stm32f4xx_i2c.c
-SRC+=stm32f4xx_spdifrx.c
-SRC+=stm32f4xx_crc.c
-SRC+=stm32f4xx_exti.c
-SRC+=stm32f4xx_iwdg.c
-SRC+=stm32f4xx_spi.c
+#SRC+=stm32f4xx_sdio.c
+#SRC+=stm32f4xx_cec.c
+#SRC+=stm32f4xx_dsi.c
+#SRC+=stm32f4xx_i2c.c
+#SRC+=stm32f4xx_spdifrx.c
+#SRC+=stm32f4xx_crc.c
+#SRC+=stm32f4xx_exti.c
+#SRC+=stm32f4xx_iwdg.c
+#SRC+=stm32f4xx_spi.c
 #SRC+=stm32f4xx_cryp.c
-SRC+=stm32f4xx_flash.c
-SRC+=stm32f4xx_lptim.c
-SRC+=stm32f4xx_syscfg.c
+#SRC+=stm32f4xx_flash.c
+#SRC+=stm32f4xx_lptim.c
+#SRC+=stm32f4xx_syscfg.c
 #SRC+=stm32f4xx_cryp_aes.c
-SRC+=stm32f4xx_flash_ramfunc.c
-SRC+=stm32f4xx_ltdc.c
-SRC+=stm32f4xx_tim.c
+#SRC+=stm32f4xx_flash_ramfunc.c
+#SRC+=stm32f4xx_ltdc.c
+#SRC+=stm32f4xx_tim.c
 #SRC+=stm32f4xx_cryp_des.c
 #SRC+=stm32f4xx_fmc.c
-SRC+=stm32f4xx_pwr.c
-SRC+=stm32f4xx_usart.c
+#SRC+=stm32f4xx_pwr.c
+#SRC+=stm32f4xx_usart.c
 #SRC+=stm32f4xx_cryp_tdes.c
-SRC+=stm32f4xx_fmpi2c.c
-SRC+=stm32f4xx_qspi.c
-SRC+=stm32f4xx_wwdg.c
-SRC+=stm32f4xx_dac.c
-SRC+=stm32f4xx_fsmc.c
-SRC+=stm32f4xx_rcc.c
-SRC+=stm32f4xx_dbgmcu.c
-SRC+=stm32f4xx_gpio.c
-SRC+=stm32f4xx_rng.c
+#SRC+=stm32f4xx_fmpi2c.c
+#SRC+=stm32f4xx_qspi.c
+#SRC+=stm32f4xx_wwdg.c
+#SRC+=stm32f4xx_dac.c
+#SRC+=stm32f4xx_fsmc.c
+#SRC+=stm32f4xx_rcc.c
+#SRC+=stm32f4xx_dbgmcu.c
+#SRC+=stm32f4xx_gpio.c
+#SRC+=stm32f4xx_rng.c
 
 CDEFS=-DUSE_STDPERIPH_DRIVER
 CDEFS+=-DSTM32F4XX
@@ -110,11 +114,13 @@ CDEFS+=-D__FPU_USED=1
 CDEFS+=-DARM_MATH_CM4
 
 MCUFLAGS=-mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -fsingle-precision-constant -finline-functions -Wdouble-promotion -std=gnu99
-COMMONFLAGS=-O$(OPTLVL) $(DBG) -Wall -ffunction-sections -fdata-sections
-CFLAGS=$(COMMONFLAGS) $(MCUFLAGS) $(INCLUDE) $(CDEFS)
+COMMONFLAGS=-O$(OPTLVL) $(DBG) -Wall -ffunction-sections -fdata-sections -D$(DEVICE)
+CFLAGS=$(COMMONFLAGS) $(MCUFLAGS) $(INCLUDE) $(CDEFS) 
 
-LDLIBS=-lm -lc -lgcc
+
+LDLIBS=-lm -lc -lgcc -lopencm3_stm32f4
 LDFLAGS=$(MCUFLAGS) -u _scanf_float -u _printf_float -fno-exceptions -Wl,--gc-sections,-T$(LINKER_SCRIPT),-Map,$(BIN_DIR)/$(TARGET).map
+LDFLAGS+= -L$(OPENCM3)/lib
 
 CC=$(ARM_TOOLCHAIN_PATH)/$(ARM_TOOLCHAIN_PREFIX)-gcc
 LD=$(ARM_TOOLCHAIN_PATH)/$(ARM_TOOLCHAIN_PREFIX)-gcc
@@ -135,7 +141,7 @@ all: $(OBJ)
 	@echo [AS] $(ASRC)
 	@$(AS) -o $(ASRC:%.s=$(BUILD_DIR)/%.o) $(STARTUP)/$(ASRC)
 	@echo [LD] $(TARGET).elf
-	@$(CC) -o $(BIN_DIR)/$(TARGET).elf $(LDFLAGS) $(OBJ) $(ASRC:%.s=$(BUILD_DIR)/%.o) $(LDLIBS)
+	$(CC) -o $(BIN_DIR)/$(TARGET).elf $(LDFLAGS) $(OBJ) $(ASRC:%.s=$(BUILD_DIR)/%.o) $(LDLIBS)
 	@echo [HEX] $(TARGET).hex
 	@$(OBJCOPY) -O ihex $(BIN_DIR)/$(TARGET).elf $(BIN_DIR)/$(TARGET).hex
 	@echo [BIN] $(TARGET).bin
