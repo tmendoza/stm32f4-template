@@ -11,11 +11,14 @@ int main(void) {
 
   gpio_setup();
 
-  while(1) {
-	  gpio_toggle(GPIOD, GPIO12);	/* LED on/off */
-		for (i = 0; i < 1000000; i++) {	/* Wait a bit. */
-		  __asm__("nop");
-		}
+  for(;;) {
+    gpio_clear(GPIOC, GPIO12);
+    for(i=0; i<1500000; i++)
+      __asm__("nop");
+
+    gpio_set(GPIOC, GPIO12);
+    for(i=0; i<500000; i++)
+      __asm__("nop");
   }
   return 0;
 }
